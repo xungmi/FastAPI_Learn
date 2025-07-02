@@ -1,0 +1,2 @@
+fastapi run books.py
+lsof -i :8000
