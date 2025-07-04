@@ -1,2 +1,5 @@
 fastapi run books.py
 lsof -i :8000
+
+
+https://www.notion.so/FastAPI-22472b24fd9b806ba578f0680712a68e
