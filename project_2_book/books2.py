@@ -14,31 +14,25 @@ class Book(BaseModel):
     author: str
     description: str
     published_year: int
-    rating: int
+    rating: Optional[int] = None
 
 
 class BookCreate(BaseModel):
-    title: str = Field(
-        ..., min_length=1, max_length=100,
-        description="Title of the book", example="A New Book"
-    )
-    author: str = Field(
-        ..., min_length=1, max_length=100,
-        description="Author of the book", example="Coding with Ruby"
-    )
-    description: str = Field(
-        ..., min_length=10, max_length=300,
-        description="Description of the book", example="A new description of a book"
-    )
-    published_year: int = Field(
-        ..., ge=0, le=2100,
-        description="Published year of the book", example=2024
-    )
-    rating: int = Field(
-        0, ge=0, le=5,
-        description="Rating of the book", example=4
-    )
-
+    title: str = Field(..., min_length=1, max_length=100)
+    author: str = Field(..., min_length=1, max_length=100)
+    description: str = Field(..., min_length=10, max_length=300)
+    published_year: int = Field(..., ge=0, le=2100)
+    rating: Optional[int] = Field(default=None, ge=0, le=5)
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "title": "Clean Code",
+                "author": "Robert C. Martin",
+                "description": "A handbook of agile software craftsmanship.",
+                "published_year": 2008,
+                "rating": 5
+            }
+        }
 
 class BookUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=100)
@@ -47,8 +41,7 @@ class BookUpdate(BaseModel):
     published_year: Optional[int] = Field(None, ge=0, le=2100)
     rating: Optional[int] = Field(None, ge=0, le=5)
 
-
-# Sample data
+# ====== Sample data ======
 BOOKS: List[Book] = [
     Book(
         id=1,
@@ -77,7 +70,7 @@ BOOKS: List[Book] = [
 ]
 
 
-# Endpoints
+# ====== ENDPOINTS ======
 @app.get("/books", status_code=status.HTTP_200_OK, response_model=List[Book])
 async def get_books(
     id : Optional[int] = Query(None, gt=0, description="Filter by book ID (must be > 0)"),
