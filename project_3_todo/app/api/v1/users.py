@@ -1,11 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Path
+from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from typing import Annotated
-from database import get_db
-from .auth import get_current_user
-from core.config import SECRET_KEY, ALGORITHM
-from schemas import UserVerification
-import models
+from ...core.database import get_db
+from ..deps import get_current_user
+from ...core.config import SECRET_KEY, ALGORITHM
+from ...schemas import UserVerification
+from ...models import Users
+from fastapi import Depends
+from typing import Annotated
+from sqlalchemy.orm import Session
+from ...core.database import get_db
 from passlib.context import CryptContext
 
 router = APIRouter(
@@ -23,7 +27,7 @@ async def get_user(user: user_dependency, db: DBDependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication failed")
 
-    return db.query(models.Users).filter(models.Users.id == user["id"]).first()
+    return db.query(Users).filter(Users.id == user["id"]).first()
 
 
 @router.put("/password", status_code=204)
@@ -35,7 +39,7 @@ async def change_password(
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication failed")
 
-    user_model = db.query(models.Users).filter(models.Users.id == user["id"]).first()
+    user_model = db.query(Users).filter(Users.id == user["id"]).first()
 
     if not bcrypt_context.verify(user_verification.password, user_model.hashed_password):
         raise HTTPException(status_code=401, detail="Error on password change")

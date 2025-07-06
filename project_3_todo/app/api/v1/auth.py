@@ -2,25 +2,20 @@
 
 
 from fastapi import APIRouter, HTTPException, Depends, status
-from models import Users
+from ...models import Users
 from passlib.context import CryptContext
-from database import get_db
+from ...core.database import get_db
 from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
-from core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_DELTA
+from ...core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_DELTA
 from datetime import datetime, timedelta, timezone
-from fastapi.security import OAuth2PasswordBearer
-from jose import jwt, JWTError
-from schemas import CreateUserRequest, Token
+from jose import jwt
+from ...schemas import CreateUserRequest, Token
 
 
 # Khởi tạo đối tượng Bcrypt hashing để mã hóa mật khẩu
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-# Tạo instance để tự động lấy token từ header của jwt
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
 # Tạo router chung cho các endpoint liên quan đến authentication trong cùng 1 mục trong Swagger UI
@@ -88,25 +83,3 @@ async def login_for_access_token(
 
     # Bearer : Server sẽ không kiểm tra danh tính người gửi, mà chỉ xác minh token có hợp lệ không.
     return {"access_token": token, "token_type": "bearer"}
-
-
-# Hàm decode và xác thực JWT
-async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        user_id: int = payload.get("id")
-        user_role: str = payload.get("role")
-
-        if username is None or user_id is None or user_role is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials"
-            )
-        return {"username": username, "id": user_id, "role": user_role}
-
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials"
-        )
