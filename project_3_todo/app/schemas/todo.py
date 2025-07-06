@@ -14,7 +14,7 @@ class TodoRequest(BaseModel):
                 "title": "Learn FastAPI",
                 "description": "So I can build powerful web APIs",
                 "priority": 3,
-                "complete": False
+                "complete": False,
             }
         }
 

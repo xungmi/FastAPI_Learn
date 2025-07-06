@@ -7,3 +7,15 @@ sqlite
 bcrypt
 python-multipart
 "python-jose[cryptography]"
+postgresql 
+postgresql-contrib -y
+psycopg2-binary
+alembic
+python3-pytest
+sqlalchemy
+httpx
+pytest
+tree
+black
+isort
+flake8

@@ -1,13 +1,12 @@
-from .user import CreateUserRequest, UserVerification
-from .todo import TodoRequest, TodoResponse
-from .auth import Token, TokenData
+from app.schemas.auth import Token, TokenData
+from app.schemas.todo import TodoRequest, TodoResponse
+from app.schemas.user import CreateUserRequest, UserVerification
 
 __all__ = [
-    "CreateUserRequest", 
+    "CreateUserRequest",
     "UserVerification",
-    "TodoRequest", 
+    "TodoRequest",
     "TodoResponse",
-    "Token", 
-    "TokenData"
+    "Token",
+    "TokenData",
 ]
-

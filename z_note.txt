@@ -1,4 +1,6 @@
 fastapi run app/main.py --reload
+PYTHONPATH=. uvicorn app.main:app --reload
+
 lsof -i :8000
 
 ./kill_port_8000.sh
@@ -14,3 +16,7 @@ https://www.notion.so/FastAPI-22472b24fd9b80aa9ba2d6f48a3b718f
 
 
 Material Icon Theme extension
+
+
+chmod +x scripts/format.sh
+./scripts/format.sh

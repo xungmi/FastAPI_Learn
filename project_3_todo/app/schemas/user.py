@@ -4,12 +4,13 @@
 
 from pydantic import BaseModel, Field
 
-
 """
 Không khai báo id và is_active vì:
     id: để SQLAlchemy tự sinh.
     is_active: mặc định là True.
 """
+
+
 # Auth schemas
 class CreateUserRequest(BaseModel):
     username: str
