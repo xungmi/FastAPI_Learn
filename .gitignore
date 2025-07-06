@@ -44,4 +44,3 @@ __pycache__
 *.coverage
 
 core/
-config.py
