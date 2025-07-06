@@ -6,6 +6,8 @@ lsof -i :8000
 lệnh tạo secret key: 
     openssl rand -hex 32
 
-
+tạo folder tree :
+    sudo snap install tree
+    tree -I "__pycache__|*.pyc|*.db" > README_STRUCTUREx.md
 
 https://www.notion.so/FastAPI-22472b24fd9b80aa9ba2d6f48a3b718f

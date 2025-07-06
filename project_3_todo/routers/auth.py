@@ -4,7 +4,7 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from models import Users
 from passlib.context import CryptContext
-from database import SessionLocal
+from database import get_db
 from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
@@ -30,14 +30,6 @@ router = APIRouter(
 )
 
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
 def authenticate_user(username: str, password: str, db: Session):
     user = db.query(Users).filter(Users.username == username).first()
     if not user:
@@ -47,11 +39,12 @@ def authenticate_user(username: str, password: str, db: Session):
     return user
 
 
-def create_access_token(username: str, user_id: int, expires_delta: timedelta):
+def create_access_token(username: str, user_id: int, role : str, expires_delta: timedelta):
     expire = datetime.now(timezone.utc) + expires_delta
     payload = {
         "sub": username,
         "id": user_id,
+        "role": role,
         "exp": expire
     }
     encoded_jwt = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
@@ -103,12 +96,14 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         user_id: int = payload.get("id")
-        if username is None or user_id is None:
+        user_role: str = payload.get("role")
+
+        if username is None or user_id is None or user_role is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials"
             )
-        return {"username": username, "id": user_id}
+        return {"username": username, "id": user_id, "role": user_role}
 
     except JWTError:
         raise HTTPException(
