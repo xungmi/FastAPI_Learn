@@ -42,3 +42,6 @@ __pycache__
 *.db-journal
 *.cache
 *.coverage
+
+core/
+config.py

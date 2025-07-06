@@ -3,4 +3,9 @@ lsof -i :8000
 
 ./kill_port_8000.sh
 
-https://www.notion.so/FastAPI-22472b24fd9b806ba578f0680712a68e
+lệnh tạo secret key: 
+    openssl rand -hex 32
+
+
+
+https://www.notion.so/FastAPI-22472b24fd9b80aa9ba2d6f48a3b718f
